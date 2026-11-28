@@ -1,5 +1,5 @@
-# Node.js with React
-# new change to chaeck trigger
+
+# Node.js with React + Vite
 trigger:
 - main
 
@@ -17,14 +17,20 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
-- task: CopyFiles@2
+# Create ZIP from Vite dist folder
+- task: ArchiveFiles@2
   inputs:
-    SourceFolder: '$(System.DefaultWorkingDirectory)/dist'
-    Contents: '**'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-  displayName: 'Copy build files'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/app.zip'
+    replaceExistingArchive: true
+  displayName: 'Create ZIP package'
+
+# Publish ZIP artifact
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
+  displayName: 'Publish artifact'
